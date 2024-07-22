@@ -1,6 +1,6 @@
-from currency_roulette_game import play as crg_play
-from guess_game import play as gg_play
-from memory_game import play as mm_play
+from games.currency_roulette_game import play as crg_play
+from games.guess_game import play as gg_play
+from games.memory_game import play as mm_play
 from utils import get_valid_number
 from score import add_score
 from main_score import score_server
