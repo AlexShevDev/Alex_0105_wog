@@ -7,29 +7,29 @@ pipeline {
         TEST_FILE = 'Scores.txt'
         HOST_PORT = '8777'
         CONTAINER_PORT = '5000'
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id')
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id') // Update with your Docker Hub credentials ID
     }
     stages {
         stage('Checkout') {
             steps {
                 script {
-                    git branch: 'main', url: 'https://github.com/AlexShevDev/Alex_0105_wog.git'
+                    bat 'git clone https://github.com/AlexShevDev/Alex_0105_wog.git'
                 }
             }
         }
         stage('Build') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    bat "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
                 }
             }
         }
         stage('Run') {
             steps {
                 script {
-                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").run(
-                        "--name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} -v \$(pwd)/${TEST_FILE}:/app/${TEST_FILE}"
-                    )
+                    bat """
+                    docker run --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} -v %CD%\\${TEST_FILE}:/app/${TEST_FILE} -d ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    """
                 }
             }
         }
@@ -37,7 +37,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'python3 e2e.py'
+                        bat 'python e2e.py'
                     } catch (Exception e) {
                         error("Tests failed")
                     }
@@ -47,16 +47,13 @@ pipeline {
         stage('Finalize') {
             steps {
                 script {
-                    sh "docker stop ${CONTAINER_NAME} || true"
-                    sh "docker rm ${CONTAINER_NAME} || true"
-                }
-            }
-        }
-        stage('Push Docker Image') {
-            steps {
-                script {
+                    bat """
+                    docker stop ${CONTAINER_NAME} || exit 0
+                    docker rm ${CONTAINER_NAME} || exit 0
+                    """
                     docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
-                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+                        bat "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                        bat "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
                     }
                 }
             }
@@ -65,8 +62,10 @@ pipeline {
     post {
         always {
             script {
-                sh "docker stop ${env.CONTAINER_NAME} || true"
-                sh "docker rm ${env.CONTAINER_NAME} || true"
+                bat """
+                docker stop ${CONTAINER_NAME} || exit 0
+                docker rm ${CONTAINER_NAME} || exit 0
+                """
             }
         }
         success {
