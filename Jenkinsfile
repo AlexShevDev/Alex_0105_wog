@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'alexshevdev/wog_alexshev'   
-        DOCKER_TAG = 'v1.1'                        
-        CONTAINER_NAME = 'wog_alex_container'      
-        TEST_FILE = 'Scores.txt'                   
-        HOST_PORT = '8777'                        
-        CONTAINER_PORT = '5000'                    
+        DOCKER_IMAGE = 'alexshevdev/wog_alexshev'
+        DOCKER_TAG = 'v1.1'
+        CONTAINER_NAME = 'wog_alex_container'
+        TEST_FILE = 'Scores.txt'
+        HOST_PORT = '8777'
+        CONTAINER_PORT = '5000'
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id') 
     }
 
@@ -56,7 +56,7 @@ pipeline {
                     sh "docker stop ${CONTAINER_NAME} || true"
                     sh "docker rm ${CONTAINER_NAME} || true"
 
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
                         docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
                     }
                 }
@@ -65,14 +65,16 @@ pipeline {
     }
 
     post {
-        success {
-            echo 'The Docker image has been successfully built, tested, and pushed to Docker Hub.'
-        }
-        failure {
+        always {
             script {
                 sh "docker stop ${CONTAINER_NAME} || true"
                 sh "docker rm ${CONTAINER_NAME} || true"
             }
+        }
+        success {
+            echo 'The Docker image has been successfully built, tested, and pushed to Docker Hub.'
+        }
+        failure {
             echo 'The build or tests have failed.'
         }
     }
