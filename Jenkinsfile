@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'alexshevdev/wog_alexshev'
-        DOCKER_TAG = 'v1.1'
+        DOCKER_TAG = 'v1.2'
         CONTAINER_NAME = 'wog_alex_container'
         TEST_FILE = 'Scores.txt'
         HOST_PORT = '8777'
