@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     environment {
         DOCKER_IMAGE = 'alexshevdev/wog_alexshev'
         DOCKER_TAG = 'v1.2'
@@ -10,7 +9,6 @@ pipeline {
         CONTAINER_PORT = '5000'
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id') 
     }
-
     stages {
         stage('Checkout') {
             steps {
@@ -19,7 +17,6 @@ pipeline {
                 }
             }
         }
-
         stage('Build') {
             steps {
                 script {
@@ -27,7 +24,6 @@ pipeline {
                 }
             }
         }
-
         stage('Run') {
             steps {
                 script {
@@ -37,7 +33,6 @@ pipeline {
                 }
             }
         }
-
         stage('Test') {
             steps {
                 script {
@@ -49,26 +44,23 @@ pipeline {
                 }
             }
         }
-
         stage('Finalize') {
             steps {
                 script {
                     sh "docker stop ${CONTAINER_NAME} || true"
                     sh "docker rm ${CONTAINER_NAME} || true"
-
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials-id') {
                         docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
                     }
                 }
             }
         }
     }
-
     post {
         always {
             script {
-                sh "docker stop ${CONTAINER_NAME} || true"
-                sh "docker rm ${CONTAINER_NAME} || true"
+                sh "docker stop ${env.CONTAINER_NAME} || true"
+                sh "docker rm ${env.CONTAINER_NAME} || true"
             }
         }
         success {
