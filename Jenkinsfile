@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                sh "git clone https://github.com/AlexShevDev/Alex_0105_wog.git ."
+                git url: 'https://github.com/AlexShevDev/Alex_0105_wog.git', branch: 'main'
             }
         }
         stage('Build') {
