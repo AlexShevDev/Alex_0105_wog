@@ -1,16 +1,7 @@
-FROM python:3.9-slim
-
+FROM python:alpine
 WORKDIR /app
-
-COPY . /app
-
+COPY . .
 COPY Scores.txt /Scores.txt
-
 RUN pip install --no-cache-dir -r requirements.txt
-
-EXPOSE 5000
-
-ENV FLASK_APP=app.py
-
-CMD ["python", "main.py"]
-
+EXPOSE 8777
+CMD python main_score.py
