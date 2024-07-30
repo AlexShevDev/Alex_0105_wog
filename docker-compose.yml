@@ -7,6 +7,6 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8777:8777"
+      - "8777:8000"
     volumes:
       - "./Scores.txt:/Scores.txt"
