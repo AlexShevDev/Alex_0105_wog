@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'pip install selenium webdriver_manager'
+                sh 'python3 -m pip install selenium webdriver_manager'
                 sh "python3 e2e.py"
             }
         }
