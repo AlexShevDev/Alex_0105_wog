@@ -1,7 +1,6 @@
 FROM python:alpine
 WORKDIR /app
 COPY . .
-COPY Scores.txt /Scores.txt
 RUN pip install --no-cache-dir -r requirements.txt
-EXPOSE 8000 8777
+EXPOSE 8000
 CMD ["python", "main_score.py"]
