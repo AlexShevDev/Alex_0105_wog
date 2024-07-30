@@ -24,7 +24,10 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh "docker exec wog_container python3 /app/e2e.py"
+               script {
+            def testOutput = sh(script: 'docker exec wog_container python3 /app/e2e.py', returnStdout: true).trim()
+            echo "Test Output: ${testOutput}"
+        }
             }
         }
         stage('Finalize') {
