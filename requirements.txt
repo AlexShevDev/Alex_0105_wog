@@ -3,3 +3,4 @@ currency_converter
 CurrencyConverter
 requests
 selenium
+webdriver_manager
