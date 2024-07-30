@@ -2,3 +2,4 @@ Flask
 currency_converter
 CurrencyConverter
 requests
+selenium
