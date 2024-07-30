@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         IMAGE_NAME = 'alexshevdev/wog_alexshev'
-        IMAGE_TAG = 'v1.4'
+        IMAGE_TAG = 'v1.5'
     }
     stages {
         stage('Checkout') {
