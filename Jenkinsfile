@@ -24,8 +24,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'python3 -m pip install selenium webdriver_manager'
-                sh "python3 e2e.py"
+                sh "docker exec wog_container python3 /app/e2e.py"
             }
         }
         stage('Finalize') {
