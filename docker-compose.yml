@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  web:
-    build: .
+  flask-app:
+    image: alexshevdev/wog_alexshev:v1.3
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "5000:5000"
-    image: alexshevdev/wog_alexshev:v1.2
-    environment:
-      - FLASK_ENV=production
-      - FLASK_APP=main.py
-
+      - "8777:8777"
+    volumes:
+      - "./Scores.txt:/Scores.txt"
